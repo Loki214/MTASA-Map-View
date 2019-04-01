@@ -26,7 +26,7 @@ func updateBlip(playerData: Dictionary):
 	if blip:
 		var pos = pos2vec(playerData.Position,768)
 		var forward = pos2vec(playerData.Forward,768)
-		blip.moveTo(pos,forward)
+		blip.moveTo(pos,playerData.Rotation,playerData.Vehicle)
 	else:
 		createBlip(playerData)
 		pass
@@ -39,7 +39,7 @@ func createBlip(playerData: Dictionary):
 	var pos = pos2vec(playerData.Position,768)
 	var forward = pos2vec(playerData.Forward,768)
 	blip.position = pos
-	blip.moveTo(pos,forward)
+	blip.moveTo(pos,playerData.Rotation,playerData.Vehicle)
 
 func pos2vec(v: Dictionary, size: float):
 	var x = range_lerp(v.x,0,3000,0,size)

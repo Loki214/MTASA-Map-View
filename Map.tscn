@@ -6,8 +6,8 @@
 
 [node name="Node" type="Node"]
 __meta__ = {
-"_edit_horizontal_guides_": [ -780.0, -768.0 ],
-"_edit_vertical_guides_": [ -768.0 ]
+"_edit_horizontal_guides_": [ -768.635 ],
+"_edit_vertical_guides_": [ -768.115 ]
 }
 
 [node name="map" type="Sprite" parent="."]
