@@ -10,13 +10,15 @@ var drag
 func _ready():
 	self.zoom = Vector2(z,z)
 
-func init():
+func initial():
 	if init:
 		return
 	resizeBlips()
 	init = true
 
 func _input(event):
+	if !tool.connected:
+		return
 	if event is InputEventMouseButton:
 		var btn = event.button_index
 		if event.pressed:
