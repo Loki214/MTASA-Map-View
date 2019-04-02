@@ -6,11 +6,12 @@
 
 [node name="Node" type="Node"]
 __meta__ = {
-"_edit_horizontal_guides_": [ -768.635 ],
-"_edit_vertical_guides_": [ -768.115 ]
+"_edit_horizontal_guides_": [ -4611.67 ],
+"_edit_vertical_guides_": [ -4608.53 ]
 }
 
 [node name="map" type="Sprite" parent="."]
+scale = Vector2( 1.50017, 1.50119 )
 texture = ExtResource( 1 )
 script = ExtResource( 2 )
 
@@ -18,8 +19,16 @@ script = ExtResource( 2 )
 
 [node name="PlayerBlips" type="Node" parent="map"]
 
-[node name="Camera2D" type="Camera2D" parent="."]
+[node name="Cam" type="Camera2D" parent="."]
+z_index = 5
 current = true
+limit_smoothed = true
+drag_margin_left = 0.0
+drag_margin_top = 0.0
+drag_margin_right = 0.0
+drag_margin_bottom = 0.0
+editor_draw_limits = true
+editor_draw_drag_margin = true
 script = ExtResource( 3 )
 
 [connection signal="ready" from="map/HTTPRequest" to="map" method="_on_HTTPRequest_ready"]

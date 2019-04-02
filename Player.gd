@@ -1,11 +1,11 @@
 extends Node
 
 var pos = self.position
-var rot = self.rotation
+var rot
 
 func moveTo(newPos: Vector2, newRot, v):
 	pos = newPos
-	rot = deg2rad(-newRot-90)
+	rot = newRot
 	if v == "None":
 		$vehicle.hide()
 		$plr.show()
@@ -15,5 +15,7 @@ func moveTo(newPos: Vector2, newRot, v):
 
 func _process(delta):
 	var dir = pos - self.position
+	var dist = dir.length()
+	var mul = range_lerp(dist,0,200,.1,1)
 	self.position += dir*.01
-	$vehicle.rotation = rot
+	$vehicle.rotation = rot.angle()

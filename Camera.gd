@@ -1,13 +1,20 @@
 extends Camera2D
 
-const S = .1
-const MXZ = 2
-const MNZ = .1
-var z = 2
+var init
+const MXZ = 20
+const MNZ = .3
+var z = 19
+var S = 0
 var drag
 
 func _ready():
 	self.zoom = Vector2(z,z)
+
+func init():
+	if init:
+		return
+	resizeBlips()
+	init = true
 
 func _input(event):
 	if event is InputEventMouseButton:
@@ -15,23 +22,38 @@ func _input(event):
 		if event.pressed:
 			if btn == 5:
 				z = min(z+S,MXZ)
+				zoomToMouse(false)
 			if btn == 4:
 				z = max(z-S,MNZ)
-			self.zoom = Vector2(z,z)
-			resizeBlips()
+				zoomToMouse(true)
 		if btn == 1:
 			drag = event.pressed
 			
 	if event is InputEventMouseMotion and drag:
-		self.offset -= (event.relative*z)
+		self.position -= (event.relative*z)
 		
 	if event is InputEventKey and event.as_text() == "R":
-		self.offset = Vector2()
-		z = 1
+		self.position = Vector2()
+		z = MXZ
 		self.zoom = Vector2(z,z)
+		resizeBlips()
+
+var zp = .25
+
+func zoomToMouse(down):
+	if z == MXZ or z == MNZ:
+		return
+	var mp = self.get_local_mouse_position()
+	if down:
+		self.position += (mp*zp)
+	else:
+		self.position -= (mp*zp)
+	S = max(min(range_lerp(z,MNZ,MXZ,.001,5),MXZ),MNZ)
+	resizeBlips()
+	self.zoom = Vector2(z,z)
 
 func resizeBlips():
 	var children = get_parent().get_node("map/PlayerBlips").get_children()
 	for child in children:
-		child.scale = Vector2(z,z)
+		child.scale = Vector2(z,z)*.7
 	pass
