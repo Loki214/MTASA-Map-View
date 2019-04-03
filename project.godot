@@ -15,14 +15,40 @@ _global_script_class_icons={
 
 [application]
 
-config/name="MTA:SA MAP"
-run/main_scene="res://Map.tscn"
-config/icon="res://icon.png"
+config/name="MTA:SA Map Viewer"
+run/main_scene="res://Scenes/Map.tscn"
+boot_splash/image="res://Assets/icon.png"
+boot_splash/bg_color=Color( 0.027451, 0.027451, 0.027451, 1 )
+config/icon="res://Assets/icon.png"
 
 [autoload]
 
-tool="*res://tools.gd"
+tool="*res://Scripts/tools.gd"
+
+[input]
+
+ui_left={
+"deadzone": 0.5,
+"events": [ Object(InputEventJoypadButton,"resource_local_to_scene":false,"resource_name":"","device":0,"button_index":14,"pressure":0.0,"pressed":false,"script":null)
+ ]
+}
+ui_right={
+"deadzone": 0.5,
+"events": [ Object(InputEventJoypadButton,"resource_local_to_scene":false,"resource_name":"","device":0,"button_index":15,"pressure":0.0,"pressed":false,"script":null)
+ ]
+}
+ui_up={
+"deadzone": 0.5,
+"events": [ Object(InputEventJoypadButton,"resource_local_to_scene":false,"resource_name":"","device":0,"button_index":12,"pressure":0.0,"pressed":false,"script":null)
+ ]
+}
+ui_down={
+"deadzone": 0.5,
+"events": [ Object(InputEventJoypadButton,"resource_local_to_scene":false,"resource_name":"","device":0,"button_index":13,"pressure":0.0,"pressed":false,"script":null)
+ ]
+}
 
 [rendering]
 
 environment/default_environment="res://default_env.tres"
+quality/zstd/long_distance_matching=false
