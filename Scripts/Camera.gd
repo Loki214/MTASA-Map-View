@@ -5,6 +5,7 @@ const MNZ = .3
 var z = 20
 var S = 5
 var drag
+onready var p = get_parent().get_node("UI/MenuBar")
 
 func _ready():
 	self.zoom = Vector2(z,z)
@@ -19,7 +20,7 @@ func initial():
 
 
 func _input(event):
-	if !tool.connected:
+	if !tool.connected or p.inSettings or p.inSettings:
 		return
 	if event is InputEventMouseButton:
 		var btn = event.button_index

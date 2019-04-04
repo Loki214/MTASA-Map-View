@@ -16,9 +16,14 @@ scale = Vector2( 1.50017, 1.50119 )
 texture = ExtResource( 1 )
 script = ExtResource( 2 )
 
-[node name="HTTPRequest" type="HTTPRequest" parent="map"]
-
 [node name="PlayerBlips" type="Node" parent="map"]
+
+[node name="RequestTimer" type="Timer" parent="map"]
+one_shot = true
+
+[node name="RequestTimeout" type="Timer" parent="map"]
+wait_time = 7.0
+one_shot = true
 
 [node name="Cam" type="Camera2D" parent="."]
 z_index = 5
@@ -47,7 +52,7 @@ anchor_bottom = 1.0
 margin_top = -60.0
 mouse_filter = 1
 
-[node name="SettingsPanel" type="Panel" parent="UI"]
+[node name="MenuBar" type="Panel" parent="UI"]
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -55,24 +60,24 @@ margin_top = -40.0
 mouse_filter = 2
 script = ExtResource( 4 )
 
-[node name="Tween" type="Tween" parent="UI/SettingsPanel"]
+[node name="Tween" type="Tween" parent="UI/MenuBar"]
 
-[node name="bg" type="ColorRect" parent="UI/SettingsPanel"]
+[node name="bg" type="ColorRect" parent="UI/MenuBar"]
 anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 2
 color = Color( 0.121569, 0.121569, 0.121569, 1 )
 
-[node name="host" type="LineEdit" parent="UI/SettingsPanel"]
+[node name="host" type="LineEdit" parent="UI/MenuBar"]
 margin_left = 10.0
 margin_top = 10.0
 margin_right = 210.0
 margin_bottom = 34.0
 align = 3
 clear_button_enabled = true
-placeholder_text = "127.0.0.1"
+placeholder_text = "127.0.0.1:22005"
 
-[node name="user" type="LineEdit" parent="UI/SettingsPanel"]
+[node name="user" type="LineEdit" parent="UI/MenuBar"]
 margin_left = 220.0
 margin_top = 10.0
 margin_right = 350.0
@@ -81,7 +86,7 @@ align = 3
 clear_button_enabled = true
 placeholder_text = "Account name"
 
-[node name="pass" type="LineEdit" parent="UI/SettingsPanel"]
+[node name="pass" type="LineEdit" parent="UI/MenuBar"]
 margin_left = 360.0
 margin_top = 10.0
 margin_right = 490.0
@@ -91,7 +96,7 @@ secret = true
 clear_button_enabled = true
 placeholder_text = "Password"
 
-[node name="Button" type="Button" parent="UI/SettingsPanel"]
+[node name="Button" type="Button" parent="UI/MenuBar"]
 margin_left = 500.0
 margin_top = 10.0
 margin_right = 590.0
@@ -99,7 +104,18 @@ margin_bottom = 34.0
 toggle_mode = true
 text = "Connect"
 
-[node name="Status" type="Label" parent="UI/SettingsPanel"]
+[node name="settingsBtn" type="Button" parent="UI/MenuBar"]
+anchor_left = 0.908
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 0.207947
+margin_top = -30.0
+margin_right = -4.0
+margin_bottom = -6.0
+text = "Settings"
+
+[node name="Status" type="Label" parent="UI/MenuBar"]
 visible = false
 margin_left = 600.0
 margin_top = 10.0
@@ -107,20 +123,87 @@ margin_right = 610.0
 margin_bottom = 34.0
 valign = 1
 
-[node name="Timer" type="Timer" parent="UI/SettingsPanel"]
+[node name="Timer" type="Timer" parent="UI/MenuBar"]
 wait_time = 2.0
+one_shot = true
 
-[connection signal="mta_connect" from="map" to="UI/SettingsPanel" method="_on_mta_connect"]
-[connection signal="mta_connect_failed" from="map" to="UI/SettingsPanel" method="_on_mta_connect_failed"]
-[connection signal="request_completed" from="map/HTTPRequest" to="map" method="_on_HTTPRequest_request_completed"]
-[connection signal="mouse_entered" from="UI/SettingsCol" to="UI/SettingsPanel" method="_on_SettingsCol_mouse_entered"]
-[connection signal="mouse_exited" from="UI/SettingsCol" to="UI/SettingsPanel" method="_on_SettingsCol_mouse_exited"]
-[connection signal="gui_input" from="UI/SettingsPanel/host" to="UI/SettingsPanel" method="onEnterPressed"]
-[connection signal="mouse_entered" from="UI/SettingsPanel/host" to="UI/SettingsPanel" method="_on_SettingsCol_mouse_entered"]
-[connection signal="gui_input" from="UI/SettingsPanel/user" to="UI/SettingsPanel" method="onEnterPressed"]
-[connection signal="mouse_entered" from="UI/SettingsPanel/user" to="UI/SettingsPanel" method="_on_SettingsCol_mouse_entered"]
-[connection signal="gui_input" from="UI/SettingsPanel/pass" to="UI/SettingsPanel" method="onEnterPressed"]
-[connection signal="mouse_entered" from="UI/SettingsPanel/pass" to="UI/SettingsPanel" method="_on_SettingsCol_mouse_entered"]
-[connection signal="mouse_entered" from="UI/SettingsPanel/Button" to="UI/SettingsPanel" method="_on_SettingsCol_mouse_entered"]
-[connection signal="toggled" from="UI/SettingsPanel/Button" to="UI/SettingsPanel" method="_on_Button_toggled"]
-[connection signal="timeout" from="UI/SettingsPanel/Timer" to="UI/SettingsPanel" method="_on_Timer_timeout"]
+[node name="settingsPanel" type="WindowDialog" parent="UI/MenuBar"]
+margin_left = 820.0
+margin_top = -340.0
+margin_right = 1010.0
+margin_bottom = -80.0
+window_title = "Settings"
+
+[node name="Label" type="Label" parent="UI/MenuBar/settingsPanel"]
+margin_left = 10.0
+margin_top = 6.0
+margin_right = 120.0
+margin_bottom = 30.0
+hint_tooltip = "WARNING!
+Setting this value lower than 0.75 will require you to increase the \"httpdosthreshold\"  or add your IP to the \"http_dos_exclude\" list in your mtaserver.conf."
+text = "Refresh rate"
+valign = 1
+
+[node name="rateEdit" type="LineEdit" parent="UI/MenuBar/settingsPanel"]
+margin_left = 120.0
+margin_top = 5.74031
+margin_right = 178.0
+margin_bottom = 29.7403
+hint_tooltip = "WARNING!
+Setting this value lower than 0.75 will require you to increase the \"httpdosthreshold\"  or add your IP to the \"http_dos_exclude\" list in your mtaserver.conf."
+text = "1"
+align = 1
+editable = false
+
+[node name="ColorRect" type="ColorRect" parent="UI/MenuBar/settingsPanel"]
+margin_left = 11.0
+margin_top = 39.2439
+margin_right = 63.0
+margin_bottom = 47.2439
+color = Color( 1, 0, 0, 1 )
+
+[node name="ColorRect2" type="ColorRect" parent="UI/MenuBar/settingsPanel"]
+margin_left = 84.0
+margin_top = 39.2439
+margin_right = 179.0
+margin_bottom = 47.2439
+color = Color( 0, 1, 0, 1 )
+
+[node name="ColorRect3" type="ColorRect" parent="UI/MenuBar/settingsPanel"]
+margin_left = 64.0
+margin_top = 39.2439
+margin_right = 83.0
+margin_bottom = 47.2439
+color = Color( 1, 1, 0, 1 )
+
+[node name="HSlider" type="HSlider" parent="UI/MenuBar/settingsPanel"]
+margin_left = 10.0
+margin_top = 30.0
+margin_right = 180.0
+margin_bottom = 46.0
+hint_tooltip = "WARNING!
+Setting this value lower than 0.75 will require you to increase the \"httpdosthreshold\"  or add your IP to the \"http_dos_exclude\" list in your mtaserver.conf."
+min_value = 0.25
+max_value = 2.0
+step = 0.05
+value = 2.0
+
+[connection signal="mta_connect" from="map" to="UI/MenuBar" method="_on_mta_connect"]
+[connection signal="mta_connect_failed" from="map" to="UI/MenuBar" method="_on_mta_connect_failed"]
+[connection signal="timeout" from="map/RequestTimer" to="map" method="refreshConnection"]
+[connection signal="timeout" from="map/RequestTimeout" to="map" method="requestTimedOut"]
+[connection signal="mouse_entered" from="UI/SettingsCol" to="UI/MenuBar" method="_on_SettingsCol_mouse_entered"]
+[connection signal="mouse_exited" from="UI/SettingsCol" to="UI/MenuBar" method="_on_SettingsCol_mouse_exited"]
+[connection signal="gui_input" from="UI/MenuBar/host" to="UI/MenuBar" method="onEnterPressed"]
+[connection signal="mouse_entered" from="UI/MenuBar/host" to="UI/MenuBar" method="_on_SettingsCol_mouse_entered"]
+[connection signal="gui_input" from="UI/MenuBar/user" to="UI/MenuBar" method="onEnterPressed"]
+[connection signal="mouse_entered" from="UI/MenuBar/user" to="UI/MenuBar" method="_on_SettingsCol_mouse_entered"]
+[connection signal="gui_input" from="UI/MenuBar/pass" to="UI/MenuBar" method="onEnterPressed"]
+[connection signal="mouse_entered" from="UI/MenuBar/pass" to="UI/MenuBar" method="_on_SettingsCol_mouse_entered"]
+[connection signal="mouse_entered" from="UI/MenuBar/Button" to="UI/MenuBar" method="_on_SettingsCol_mouse_entered"]
+[connection signal="toggled" from="UI/MenuBar/Button" to="UI/MenuBar" method="_on_Button_toggled"]
+[connection signal="button_up" from="UI/MenuBar/settingsBtn" to="UI/MenuBar" method="_on_settingsBtn_button_up"]
+[connection signal="mouse_entered" from="UI/MenuBar/settingsBtn" to="UI/MenuBar" method="_on_SettingsCol_mouse_entered"]
+[connection signal="timeout" from="UI/MenuBar/Timer" to="UI/MenuBar" method="_on_Timer_timeout"]
+[connection signal="popup_hide" from="UI/MenuBar/settingsPanel" to="UI/MenuBar" method="_on_settingsPanel_popup_hide"]
+[connection signal="value_changed" from="UI/MenuBar/settingsPanel/HSlider" to="UI/MenuBar" method="_on_HSlider_value_changed"]

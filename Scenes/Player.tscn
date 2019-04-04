@@ -13,11 +13,19 @@ border_color = Color( 0.0509804, 0, 0.376471, 1 )
 border_blend = true
 
 [node name="Player" type="Node2D"]
+position = Vector2( 0, 2 )
 scale = Vector2( 2, 2 )
 script = ExtResource( 1 )
 
+[node name="TweenPos" type="Tween" parent="."]
+
+[node name="TweenRot" type="Tween" parent="."]
+
+[node name="dummy" type="Node2D" parent="."]
+rotation = -1.57079
+scale = Vector2( 0.0744788, 0.0744788 )
+
 [node name="vehicle" type="Sprite" parent="."]
-visible = false
 rotation = -1.57079
 scale = Vector2( 0.0744788, 0.0744788 )
 texture = ExtResource( 2 )
@@ -40,7 +48,6 @@ margin_right = 10.0
 margin_bottom = 10.0
 
 [node name="Label" type="Label" parent="."]
-editor/display_folded = true
 margin_left = 30.0
 margin_top = -60.0
 margin_right = 32.0

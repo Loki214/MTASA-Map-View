@@ -5,6 +5,7 @@ onready var blocker = get_parent().get_parent().get_node("UI/blocker")
 onready var main = get_parent().get_parent().get_node("map")
 onready var camera = get_parent().get_parent().get_node("Cam")
 var mouseOnCol: bool
+var inSettings: bool
 
 func _ready():
 	$host.grab_focus()
@@ -32,14 +33,24 @@ func _on_SettingsCol_mouse_exited():
 func onEnterPressed(event: InputEventKey):
 	if event and event.as_text() == "Enter" and !event.pressed:
 		if !$Button.pressed:
-			main.loginUser($user.text,$pass.text)
+			main.loginUser($user.text,$pass.text,$host.text)
 			$Button.pressed = true
 			$Button.disabled = true
+			if !$Timer.is_stopped():
+				$Timer.stop()
+			$Status.text = "Connecting..."
+			$Status.modulate = Color(1,1,1)
+			$Status.show()
 
 func _on_Button_toggled(p):
 	if p:
-		main.loginUser($user.text,$pass.text)
+		main.loginUser($user.text,$pass.text,$host.text)
 		$Button.disabled = true
+		if !$Timer.is_stopped():
+			$Timer.stop()
+		$Status.text = "Connecting..."
+		$Status.modulate = Color(1,1,1)
+		$Status.show()
 	else:
 		main.logoutUser()
 		blocker.show()
@@ -48,9 +59,9 @@ func _on_Button_toggled(p):
 		camera.initial()
 
 var status = { 
-	0: "Connection terminated by server.", 
-	200: "Connection to resource failed.", 
-	401: "Incorrect login info." 
+	0: "Connection refused.",
+	200: "Connection to resource failed.",
+	401: "Incorrect or Unauthorized login details."
 }
 
 func _on_mta_connect_failed(reason):
@@ -73,6 +84,8 @@ func _on_mta_connect():
 	$Status.text = "Connected."
 	$Status.modulate = Color(0,1,0)
 	toggleFields(false)
+	tool.updateRate = 1
+	$settingsPanel/HSlider.value = tool.updateRate
 
 func _on_Timer_timeout():
 	$Status.hide()
@@ -85,3 +98,16 @@ func toggleFields(state: bool):
 	$host.editable = state
 	$user.editable = state
 	$pass.editable = state
+
+func _on_settingsBtn_button_up():
+	$settingsPanel.popup()
+	inSettings = true
+
+
+func _on_HSlider_value_changed(value):
+	tool.updateRate = value
+	$settingsPanel/rateEdit.text = str(value)
+
+
+func _on_settingsPanel_popup_hide():
+	inSettings = false
